@@ -1,0 +1,133 @@
+\documentclass[UTF8, scheme=plain, 12pt]{ctexrep}
+\usepackage[en-US]{datetime2} % English date formatting
+\usepackage[svgnames,table]{xcolor} % Add 'table' for more colors
+\usepackage{amsmath} % Required for \text command
+\usepackage{graphicx}
+\usepackage[normalem]{ulem}
+
+\setlength{\parindent}{0pt} % Add this line - removes ALL indentation
+
+\title{\mbox{\textbf{Note for Computer Networks}}}
+\author{JohnsonFish Ye}
+
+\begin{document}
+\maketitle
+\chapter{Computer Networks and the Internet}
+\section{What Is the Internet}
+\section{The Network Edge}
+\section{The Network Core}
+  Briefly speaking, this section talks about the mesh of \textbf{packet  switches} (\textbf{router} or \textbf{link-layer-switches}) and \textbf{links interconnecting the Internet's end systems}
+  \begin{center}
+      \includegraphics[scale=0.5]{The Network Core.png}
+  \end{center}
+
+  \subsection{Packet Switching}
+  The source end system breaks long messages into smaller chunks of data known as \textbf{packets}
+
+  \vspace{1cm}
+  \textcolor{CornflowerBlue}{\textbf{Store-and-Forward Transmission}}\newline
+
+  This means that the packet switch must receive the entire packet before it begin to forward.
+
+  So when a router receive some bit from the source, it has to \textbf{buffer} (store) the bits.\newline
+
+  \textbullet\quad The amount of time that elapses from (ignore propagation delay here)\newline
+
+  Let's consider the general case of sending one packet through N links and each of rate R.\newline
+
+  Thus, there are N - 1 routers. At time L/R, the 1st router begins to forward. So at (N - 1)L/R, the last router begins to forward and the packet will reach the destination at N(L - R).\newline
+
+  \[ d_{end-to-end} = N\frac{L}{R} \] \newline
+
+  What's more, you may think about such two case:\newline
+
+  \textbullet\quad The soure and the switch have different transmission rate
+
+  \textbullet\quad Sending more packets over a series of links.
+  \vspace{1cm}
+
+  \textcolor{CornflowerBlue}{\textbf{Queuing Delays and Packet Loss}}\newline
+
+  Each packet switch has multiple links attach to it. And for \textbf{each} attached link, the packet switch has an \textbf{output buffer} (or \textbf{output queue}).\newline
+
+  When a new packet arrives and find the buffer is full, the \textbf{packet loss} occurs - either the arriving packet or one of the already-queued packets will drop.
+
+  \vspace{1cm}
+
+  \textcolor{CornflowerBlue}{\textbf{Forwarding Table and Routing Protocols}}\newline
+
+  In the Internet, every end system has an IP address included in the packet's header.\newline
+
+  \textbullet\quad The address has hierarchical structure like postal address.\newline
+
+  A router use the destination address to index the \textbf{forwarding table} to determine the appropiate outbound link.\newline
+
+  The forwarding table gets set automatically accoring to the routing protocols, which determine the shortest path to each destination.
+
+  We will delve more into the generation of forwarding tables in chapter5 (I should make a hyperlink here then).
+
+  \subsection{Circuits Switching}
+  In circuit switching, the resource should be reserved.\newline
+
+  If one link has 4 circuits, then each circuit has 1/4 of the link's total capacity.
+  
+  \vspace{1cm}
+
+  \textcolor{CornflowerBlue}{\textbf{Multiplexing in Circuit-Switching Networks}}
+  \vspace{1cm}
+
+  \textbullet\quad \textbf{Frequency-Division Multiplexing (FDM)}
+
+  \textbullet\quad \textbf{Time-Division Multiplexing (TDM)}\newline
+
+  Time is divided into frames of fixed duration, and each frame is devided into a fixed number of tiem slots.
+
+  Each connection occupies one time slot in every frame.
+  \begin{center}
+    \includegraphics[scale=0.3]{Presentation of FDM and TDM.png}
+  \end{center}
+
+  For TDM, 
+  
+  \[transmission rate = frame rate \times bit/slot\]\newline
+
+  \textbf{Obviously}, circuit switching is wasteful for some of the dedicated circuits are idle during \textbf{silent periods (quiescent periods)}\newline
+
+  \textcolor{CornflowerBlue}{Let's discuss Packet Switching Versus Circuit Switching}\newline
+
+  \begin{enumerate}
+    \item Circuit Switching
+    \begin{itemize}
+      \item Good at real-time services e.g. telephone calls and video conference acalls
+    \end{itemize}
+    \item Packet Switching
+    \begin{itemize}
+      \item Better sharing of transmission capacity.
+      \item Simpler, more efficient.
+    \end{itemize}
+  \end{enumerate}
+
+
+  Take a look at some numerical examples showing the efficiency of packet switching:\newline
+
+  \begin{itemize}
+    \item Total Transmission Rate = 1 Mbps
+    \item Each user generates data at a rate of 100 kbps
+    \item A user only be active 10\% of the time 
+  \end{itemize}
+
+  For TDM, the link can only support (1Mb / 100kb) = 10 simultaneous users.
+
+  If there 35 users, according to probability, there are only 3.5 users being active at a time.
+
+  Thus, just $3.5 \times 100kbs = 350kbps$ is in use while (1Mbps - 350kbps) is idle. 
+\newline
+
+  More Simply, if there are 10 users in total but just 1 is active. For TDM, it need 10 times of time to transmit all of its bits compared to the packet switching.\newline
+
+  \uwave{In fact, the trend has certainly been in the direction of packet switching.}
+
+
+
+    
+\end{document}
