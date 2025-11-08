@@ -128,6 +128,276 @@
   \uwave{In fact, the trend has certainly been in the direction of packet switching.}
 
 
+  \subsection{A Network of Networks}
+
+  \textbullet\quad Points of Presence (PoPs)\newline
+
+  A PoP is simply a group of one or more routers (at the same location)\newline
+
+  PoPs exist in all levels of the hierarchy, except for the bottom (access ISP).\newline
+
+  \textbullet\quad Any ISP may choose to multi-home, that is, to connect to more than one provider ISPs, so that it can continue to send and receive packets into the Internet even if one of the provider ISPs fails.\newline
+
+  \textcolor{CornflowerBlue}{To save the fee}, ISPs nearby can peer with each other to form a direct connection between them. So that they can communicate with each other without the use of the higher-level providers.\newline
+
+  \textbullet\quad Internet Exchange Point (IXP)\newline
+
+  It is a \textbf{meeting point} where multiple ISPs can peer together.
+
+  \begin{center}
+    \includegraphics[scale=0.4]{Structure of A Network of Networks.png}
+  \end{center}
+
+\section{Delay, Loss and Throughput in Packet-Switched Networks}
+
+First of all, I prefer to give a summary of the types of delay.
+\begin{enumerate}
+  \item Processing Delay
+  \item Queuing Delay
+  \item Transmission Delay
+  \item Propogation Delay
+\end{enumerate}
+  \subsection{Overview of the Delay}
+
+  \textcolor{CornflowerBlue}{\textbf{Processing Delay}}\newline
+
+  The time to examine the packet's \textbf{header} and determine where to \textbf{direct} to packet is one of the component of processing delay.\newline
+
+  Other part: e.g. Check for bit-level errors\newline
+
+  On the order of microseconds or less.\newline
+
+  After this: The router directs the packet to the queue that procedes the link to router B.\newline
+
+  \textcolor{CornflowerBlue}{\textbf{Queuing Delay}}\newline
+
+  The time arriving packets wait in the buffer until it is transmitted onto the link.\newline
+
+  We want to find the function depicting the number of packets in the buffer with repect to the intensity of traffic. (Will be discussed later)\newline
+
+  \textcolor{CornflowerBlue}{\textbf{Transmission Delay}}\newline
+
+  Has already been introduced, no new stuffs here.\newline
+
+  \textcolor{CornflowerBlue}{\textbf{Propagation Delay}}\newline
+
+  The time required to propagate the alread-on-link packet to the target router. (Depend on the physical medium, namely, fiber optics, twisted-pair copper wire etc.)\newline
+
+
+  Ok, so combining all above, the formula of delay is:\newline
+
+  \[d_{nodal} = d_{proc} + d_{queue} + d_{trans} + d_{prop}\]
+
+\subsection{Queuing Delay and Packet Loss}
+
+The \textbf{Queuing Delay} is the most complicated and interesting component of nodal delay.\newline
+
+Obviously, the queuing delay can vary from packet to packet.\newline
+Therefore, we use statistical measures to characterize it.\newline
+
+To talk about the queuing delay, we should first tell if the packets arrive periodically or in bursts.
+
+Suppose R (packet/sec) is the transmission rate, a (packet/sec) is the rate that packets arriveand at the queue and each packet has L bits.\newline
+
+Then the rate at which bits arrive at the queue is La bits/sec.\newline
+
+And we call the ratio \textbf{La/R}, \textcolor{CornflowerBlue}{\textbf{traffic intensity}}\newline
+
+A good designed network should ensure that its \textit{traffic intensity} no greater than 1.\newline
+
+Now let's consider the case La/R $\leq$ 1,\newline
+
+\textbullet\quad If packets arrive periodically - that is, every packet arrives every L/R seconds, then every packet will arrive at an empty queue therefore there will be no queuing delay.\newline
+
+\textbullet\quad If packets arrive in bursts. Suppose N packets arrive simultaneously every (L/R)N seconds.Then the \textcolor{CornflowerBlue}{\textbf{first}} packet will have no queuing delay, but the \textcolor{CornflowerBlue}{\textbf{nth}} packet will have a queuing delay of (n - 1)L/R seconds. \newline
+
+\textbullet\quad However, in practice, packets always arrive randomly but not follow any pattern. The qualitive dependence of average queuing delay on the traffic intensity is shown below:\newline
+\begin{center}
+  \includegraphics[scale = 0.4]{Dependence of Average Queuing Delay on Traffic Intensity.png}
+\end{center}
+
+\textcolor{CornflowerBlue}{\textbf{Packet Loss}}\newline
+
+\textbullet\quad The queue has finite capacity in reality\newline
+
+So if a packet arrive at a queuing finding no space for it, it will be dropped by the router - that is, the packet will be lost.\newline
+
+Form the end-system viewpoint, it looks like a packet having been transmitted into the network core but never emerging from the network at the \textbf{destination}\newline
+
+\subsection{End-to-End Delay}
+Amount of the total delay from source to destination\newline
+
+Suppose there are N - 1 routers between source and destination.\newline
+
+The total delay from accumulated nodal delay is given by:\newline
+
+\begin{center}
+  \[d_{end-end} = N(d_{proc} + d_{trans} + d_{que} + d_{prop})\]
+\end{center}
+
+\subsection{Throughput in Computer Networks}
+
+To define throughput, consider transfering large files from Host A to Host B. \newline
+
+The \textbf{instantaneous throughput} is the rate (bit/s) at which Host B is receiving the file.\newline
+
+If the file consits of F bits and the transfer takes T seconds for Host B to receive them, then the \textbf{average throughput} is F/T bits/sec.\newline
+
+For some applications, delay is not critical, but they are desirable for the highest possible throughput.\newline
+
+\textbf{Now, let's delve more into throughput.}\newline
+
+Let $R_{s}$ denotes the rate of the link between the server and the router and $R_{c}$ denotes the rate of the link between the client and the router. Suppose there is only one bit being sent in the entire network.\newline
+
+\textbf{If $R_{s} < R_{c}$}, then the throughput is $R_{s}$ bps.
+
+\textbf{If $R_{c} < R_{s}$}, then the throughput is $R_{c}$ bps.\newline
+
+So, the throughput is $min\{R_{c}, R_{s}\}$ - the rate of the \textbf{bottleneck link}.\newline
+
+Further, for the N links case, the throughput is $min\{R_{1}, R_{2}, R_{3}, ..., R_{N}\}$.\newline
+
+\begin{center}
+  \includegraphics[scale = 0.4]{Throughput for A File Passing Many Routers.png}
+\end{center}
+
+For another example, if 10 clients download with 10 servers, let R denotes the rate of the common link.$R_{s} = 2 Mbps, R_{c} = 1 Mbps, R = 5 Mbps$\newline
+
+The common link will divide its rate equally among the 10 downloads, so the bottleneck for each download is now $(5 Mbps / 10 = 500 kbps)$.
+\begin{center}
+  \includegraphics[scale = 0.4]{10 clients download with 10 servers.png}
+\end{center}
+
+So a link with a high rate may also be the bottleneck.\newline
+
+The constraining factor for throughput in today's Internet is typically the access network.
+
+\section{Protocol Layers and Their Service Models}
+Each layer provide its service by\newline
+
+(1) Performing certain actions within that layer.\newline
+(2) Using the service of the layer directly below it.\newline
+
+\textbf{The ability to change the implementation of one the service without affecting others is one of important advantages of layering.}\newline
+
+\textcolor{CornflowerBlue}{\textbf{Protocol Layering}}\newline
+
+Let's see how each layer provide service the the layer above so-called \textbf{service model} of a layer.\newline
+
+\begin{center}
+  \includegraphics[scale = 0.5]{Protocol Stack.png}
+\end{center}
+
+\textcolor{CornflowerBlue}{\textbf{Application Layer}}\newline
+
+The packet of information at the application layer is referred to as a \textbf{message}\newline
+A special application protocol: \textbf{Domain Name System (DNS)}.\newline
+
+\textcolor{CornflowerBlue}{\textbf{Transport Layer}}\newline
+Two transport protocols: TCP and UDP\newline
+\textbullet\quad TCP provides a \textbf{connection-oriented} service, which includes guaranteed deliver of application-layer massages to the destination and flow control (that is , sender/receiver speed matching).\newline
+
+\textbullet\quad TCP also breaks long messages into shorter segments and provides a congestion-control mechanism.\newline
+So a sour will throttles its transmission rate when there is congestion.\newline
+
+
+\textbullet\quad UDP protocol provides a \textbf{connectionless} service to its applications.
+It's a \textbf{no-frills} service with\newline
+\textbullet\quad no reliability\newline
+\textbullet\quad no flow control\newline
+\textbullet\quad no congestion control\newline
+
+We will refer to a transport-layer packet as a \textbf{segment}.\newline
+
+\textcolor{CornflowerBlue}{\textbf{Network Layer}}\newline
+
+The network layer is responsible for moving network-layer packets known as \textbf{datagrams} from one host to another.
+
+The transport-layer protocol pass a segment and a destination address to the network layer\newline
+
+One of the network-layer protocol is the celebrated \textbf{IP protocol}, which defines the fields in the datagrams as well as how the end systems act on the fields.\newline
+
+\textbf{There is only one IP protocol}.\newline
+
+The network-layer also contains many kinds of \textbf{routing protocols}, which determines the routes that datagrams take between sources and destination.\newline
+
+The network layer is also referred to as \textbf{IP Layer}.\newline
+
+\textcolor{CornflowerBlue}{Link Layer}\newline
+
+Link layer protocols include Ethernet, WiFi and the cable access network's DOCSIS protocol.\newline
+
+Therefore, A datagram may be handled by different link-layer protocols at different links along its route.\newline
+
+The link layer packets are referred to as \textbf{frames}.\newline
+
+\textcolor{CornflowerBlue}{\textbf{Physical Layer}}\newline
+
+The job of physical layer is to move the \textit{individual bit} within the frame from one node to the next.\newline
+
+The protocol of this layer is dependent on the physical medium of the link.\newline
+
+(\textit{For example, Ethernet has many physical-layer protocols: one for twisted-pair copper wire, another for coaxial cable, another for fiber, and so on. In each case, a bit is moved across the link in a different way.})
+
+\subsection{Encapsulation}
+\begin{center}
+  \includegraphics[scale = 0.3]{Encapsulation along Protocol Layers.png}
+\end{center}
+
+Link-layer switch and router do not implement \textit{all} of the layers in the protocol stack.\newline
+
+The process of \textit{Encapulation}:\newline
+
+\begin{enumerate}
+  \item The trasport layer take the messages and add \textbf{trapsort-layer header information}.\newline \textbf{Actions}:
+  \begin{itemize}
+    \item Breaks application data into segments
+    \item Adds port numbers
+    \item Add information that allows the receiver-side transport layer to deliver the message up to the application layer
+    \item Add error-detection bit
+    \item Sends them to the network layer.
+  \end{itemize}
+  \item The Network Layer receives the segments from transport layer and add \textbf{network layer header information}, such as the IP address of source and destination.
+  \item The Link Layer receive the datagrams from the Network layer.\newline \textbf{Actions}:
+  \begin{itemize}
+    \item Wraps packets into frames
+    \item Adds MAC addresses
+    \item Checks for transmission errors
+    \item sends to the physical layer.
+  \end{itemize}
+  \item The Physical Layer converts bits into electrical, optical, or radio signals for transmission over the medium.
+\end{enumerate}
+
+At each layer, a packet has a header field and a \textbf{payload field}.\newline
+
+\section{Networks Under Attack}
+\textcolor{CornflowerBlue}{\textbf{Bad Guys Can Put Malware into Hosts Via the Internet.}}\newline
+May use a \textbf{botnet} for spam e-mail or distributed \textbf{denial-of-service (DDoS)}.\newline
+Most of the malware is \textbf{self-replicating} today.\newline
+
+\textcolor{CornflowerBlue}{\textbf{Bad Guys Can Attack Servers and Network Infrastructure}}\newline
+
+\begin{itemize}
+  \item Vulnerability Attack
+  \item Bandwidth Flooding (DDoS again)
+  \item Connection Flooding
+\end{itemize}
+
+\textcolor{CornflowerBlue}{\textbf{Bad Guys Can Sniff Packets}}\newline
+
+A \textbf{Packet Sniffer} - a passive receiver that records a copy of every packet that flies by.
+
+\textcolor{CornflowerBlue}{\textbf{Bad Guys Can Masquerade as Someone You Trust}}\newline
+
+The ability to inject packets into the Internet with a false source address is known as \textbf{IP spoofing}.\newline
+
+What is the consequence?\newline
+Imagine the unsuspecting receiver (say an Internet router) who receives such a packet, takes the (false) source address as being truthful, and then performs some command embedded in the packet's contents (say modifies its forwarding table)\newline
+
+In closing this section, We should keep in mind that communication 
+among mutually trusted users is the \textbf{exception} rather than the rule. \newline
+
+\textbf{Welcome to the world of modern computer networking!}
 
     
 \end{document}
